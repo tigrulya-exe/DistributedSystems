@@ -9,7 +9,6 @@ object ArgsResolver {
         if (args.size != ARGS_LENGTH) {
             throw WrongArgumentException("Wrong arguments count")
         }
-
         return args[0]
     }
 

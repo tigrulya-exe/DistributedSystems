@@ -2,6 +2,7 @@ package ru.nsu.manasyan.osm
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 import java.io.BufferedInputStream
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import javax.xml.namespace.QName
@@ -22,8 +23,13 @@ class OsmXmlProcessor {
         getDecompressedBZ2Stream(fileName).use {
             val xmlFactory = XMLInputFactory.newInstance()
             val filteredReader = xmlFactory.createFilteredReader(
-                xmlFactory.createXMLEventReader(it)
-            ) { it is StartElement }
+                xmlFactory.createXMLEventReader(
+                    it,
+                    StandardCharsets.UTF_8.name()
+                )
+            ) {
+                it is StartElement
+            }
             try {
                 while (filteredReader.hasNext()) {
                     val element = filteredReader.nextEvent() as StartElement
