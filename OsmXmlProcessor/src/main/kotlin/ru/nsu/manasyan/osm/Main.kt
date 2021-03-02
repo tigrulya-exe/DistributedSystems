@@ -1,13 +1,15 @@
 package ru.nsu.manasyan.osm
+
 import org.slf4j.LoggerFactory
-import javax.xml.stream.XMLStreamException
+import ru.nsu.manasyan.osm.processor.StaxOsmXmlProcessor
 import java.nio.file.NoSuchFileException
+import javax.xml.stream.XMLStreamException
 
 fun main(args: Array<String>) {
     val log = LoggerFactory.getLogger("Main")
     try {
         log.info("Starting file processing")
-        val result = OsmXmlProcessor().process(
+        val result = StaxOsmXmlProcessor().process(
             ArgsResolver.getInputFilePath(args)
         )
         println("User edits: ")
