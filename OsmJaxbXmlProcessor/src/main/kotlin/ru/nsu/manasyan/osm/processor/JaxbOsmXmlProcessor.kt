@@ -2,14 +2,13 @@ package ru.nsu.manasyan.osm.processor
 
 import ru.nsu.manasyan.osm.OsmStatistics
 import ru.nsu.manasyan.osm.model.generated.Node
-import ru.nsu.manasyan.osm.model.generated.Tag
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import javax.xml.bind.JAXBContext
 import javax.xml.bind.Unmarshaller
-import javax.xml.stream.XMLEventReader
 import javax.xml.stream.XMLInputFactory
-import javax.xml.stream.events.StartElement
+import javax.xml.stream.XMLStreamConstants
+import javax.xml.stream.XMLStreamReader
 
 
 class JaxbOsmXmlProcessor : OsmXmlProcessor() {
@@ -20,53 +19,42 @@ class JaxbOsmXmlProcessor : OsmXmlProcessor() {
     }
 
     init {
-        val context = JAXBContext.newInstance(Node::class.java, Tag::class.java)
+        val context = JAXBContext.newInstance(Node::class.java)
         unmarshaller = context.createUnmarshaller()
     }
 
     override fun processDecompressedStream(stream: InputStream): OsmStatistics {
         val stats = OsmStatistics()
         val xmlFactory = XMLInputFactory.newInstance()
-        var filteredReader: XMLEventReader? = null
+        var reader: XMLStreamReader? = null
 
         try {
-            filteredReader = xmlFactory.createXMLEventReader(
-                    stream,
-                    StandardCharsets.UTF_8.name()
-                )
+            reader = xmlFactory.createXMLStreamReader(
+                stream,
+                StandardCharsets.UTF_8.name()
+            )
 
-            while (filteredReader.hasNext()) {
-                val element = filteredReader.peek()
-                if ((element is StartElement) && element.name.localPart == NODE_NAME) {
-                    handleNode(filteredReader, stats)
-                    continue
+            while (reader.hasNext()) {
+                val event = reader.next()
+                if (event == XMLStreamConstants.START_ELEMENT && reader.localName == NODE_NAME) {
+                    handleNode(reader, stats)
                 }
-                filteredReader?.nextEvent()
             }
         } finally {
-            filteredReader?.close()
+            reader?.close()
         }
 
         return stats
     }
 
     private fun handleNode(
-        reader: XMLEventReader,
+        reader: XMLStreamReader,
         osmStatistics: OsmStatistics
     ) {
-        val node: Node = unmarshaller.unmarshal(reader, Node::class.java).value
+        val node = unmarshaller.unmarshal(reader, Node::class.java).value
         osmStatistics.editsByUser.increment(node.user)
         node.tag.forEach {
             osmStatistics.nodesCountByTag.increment(it.k)
         }
     }
 }
-
-//private class XsiTypeReader(reader: XMLEventReader?) : EventReaderDelegate(reader) {
-//    override fun getAttributeNamespace(arg0: Int): String {
-//        val element = filteredReader.peek()
-//        return if ((element is StartElement) && element. ) {
-//        "http://www.w3.org/2001/XMLSchema-instance"
-//        } else super.getAttributeNamespace(arg0)
-//    }
-//}

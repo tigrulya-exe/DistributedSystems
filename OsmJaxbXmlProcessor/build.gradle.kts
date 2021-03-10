@@ -14,15 +14,18 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(project(":osm-processor-lib"))
 
-    implementation("com.sun.xml.bind:jaxb-xjc:3.0.0")
-    implementation("com.sun.xml.bind:jaxb-impl:2.3.1")
-    implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")
-    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    val sunJaxbVersion = "2.2.7-b41"
+    val apiJaxbVersion = "2.2.7"
+    implementation("com.sun.xml.bind:jaxb-xjc:$sunJaxbVersion")
+    implementation("com.sun.xml.bind:jaxb-impl:$sunJaxbVersion")
+//    implementation("com.sun.xml.bind:jaxb-core:$sunJaxbVersion")
+    implementation("javax.xml.bind:jaxb-api:$apiJaxbVersion")
+    implementation("javax.activation:activation:1.1.1")
 
     jaxb("javax.activation:activation:1.1.1")
-    jaxb("com.sun.xml.bind:jaxb-xjc:3.0.0")
-    jaxb("com.sun.xml.bind:jaxb-impl:3.0.0")
-    jaxb("javax.xml.bind:jaxb-api:2.2.7")
+    jaxb("com.sun.xml.bind:jaxb-xjc:$sunJaxbVersion")
+    jaxb("com.sun.xml.bind:jaxb-impl:$sunJaxbVersion")
+    jaxb("javax.xml.bind:jaxb-api:$apiJaxbVersion")
 }
 
 tasks {
