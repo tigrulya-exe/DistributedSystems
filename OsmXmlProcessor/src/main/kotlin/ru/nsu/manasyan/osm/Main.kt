@@ -1,6 +1,7 @@
 package ru.nsu.manasyan.osm
 
 import org.slf4j.LoggerFactory
+import ru.nsu.manasyan.osm.model.Statistics
 import ru.nsu.manasyan.osm.processor.StaxOsmXmlProcessor
 import java.nio.file.NoSuchFileException
 import javax.xml.stream.XMLStreamException

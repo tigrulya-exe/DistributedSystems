@@ -1,7 +1,7 @@
 package ru.nsu.manasyan.osm.processor
 
-import ru.nsu.manasyan.osm.OsmStatistics
-import ru.nsu.manasyan.osm.Statistics
+import ru.nsu.manasyan.osm.model.OsmStatistics
+import ru.nsu.manasyan.osm.model.Statistics
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import javax.xml.namespace.QName

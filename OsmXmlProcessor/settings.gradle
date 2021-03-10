@@ -1,9 +1,2 @@
-pluginManagement {
-    plugins {
-        id 'org.jetbrains.kotlin.jvm' version '1.4.10'
-    }
-}
-
 rootProject.name = 'OsmStaxXmlProcessor'
-include 'OsmXmlProcessor'
 

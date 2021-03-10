@@ -1,7 +1,7 @@
 package ru.nsu.manasyan.osm.processor
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
-import ru.nsu.manasyan.osm.OsmStatistics
+import ru.nsu.manasyan.osm.model.OsmStatistics
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.nio.file.Files

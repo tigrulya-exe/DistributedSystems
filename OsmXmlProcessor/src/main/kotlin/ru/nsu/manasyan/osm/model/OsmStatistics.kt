@@ -1,4 +1,4 @@
-package ru.nsu.manasyan.osm
+package ru.nsu.manasyan.osm.model
 
 class Statistics {
     val value: MutableMap<String, Int> = hashMapOf()

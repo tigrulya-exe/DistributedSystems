@@ -1,18 +1,18 @@
 package ru.nsu.manasyan.osm
 
-import ru.nsu.manasyan.osm.processor.JaxbOsmXmlProcessor
+import ru.nsu.manasyan.osm.model.generated.Node
+import ru.nsu.manasyan.osm.processor.XmlProcessor
 import java.nio.file.NoSuchFileException
 import javax.xml.stream.XMLStreamException
 
 fun main(args: Array<String>) {
     try {
-        val result = JaxbOsmXmlProcessor().process(
-            ArgsResolver.getInputFilePath(args)
-        )
-        println("User edits: ")
-        printStats(result.editsByUser)
-        println("Node counts by tag: ")
-        printStats(result.nodesCountByTag)
+        val nodes = mutableSetOf<Node>()
+        XmlProcessor.process(
+            ArgsResolver.getInputFilePath(args),
+            "node"
+        ) { n: Node -> nodes.add(n) }
+        println(nodes.size)
     } catch (exc: WrongArgumentException) {
 //        log.error(exc.localizedMessage)
         println(ArgsResolver.usage())
@@ -21,13 +21,4 @@ fun main(args: Array<String>) {
     } catch (exc: NoSuchFileException) {
 //        log.error("No file was found with the provided path")
     }
-}
-
-fun printStats(stats: Statistics) {
-    stats.value
-        .entries
-        .sortedByDescending { it.value }
-        .forEach {
-            println("${it.key}: ${it.value}")
-        }
 }

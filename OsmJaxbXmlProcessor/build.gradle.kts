@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "1.4.10"
     id("com.github.jacobono.jaxb") version "1.3.5"
 }
 
@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation(project(":osm-processor-lib"))
+    implementation ("org.apache.commons:commons-compress:1.3")
 
     val sunJaxbVersion = "2.2.7-b41"
     val apiJaxbVersion = "2.2.7"
