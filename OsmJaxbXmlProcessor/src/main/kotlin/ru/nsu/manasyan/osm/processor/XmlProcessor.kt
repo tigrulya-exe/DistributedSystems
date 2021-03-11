@@ -11,13 +11,13 @@ import javax.xml.stream.XMLEventReader
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.events.StartElement
 
-typealias NodeHandler<T> = Consumer<T>
+typealias XmlNodeHandler<T> = Consumer<T>
 
-object XmlProcessor {
+class XmlProcessor {
     inline fun <reified T> process(
         fileName: String,
         nodeName: String,
-        handler: NodeHandler<T>
+        handler: XmlNodeHandler<T>
     ) {
         return BZip2CompressorInputStream(
             BufferedInputStream(
@@ -33,7 +33,7 @@ object XmlProcessor {
     inline fun <reified T> processDecompressedStream(
         stream: InputStream,
         nodeName: String,
-        handler: NodeHandler<T>
+        handler: XmlNodeHandler<T>
     ) {
         val unmarshaller = JAXBContext
             .newInstance(T::class.java)

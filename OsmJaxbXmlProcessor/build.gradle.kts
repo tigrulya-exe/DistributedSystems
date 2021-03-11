@@ -11,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation ("org.apache.commons:commons-compress:1.3")
+    implementation(kotlin("stdlib-jdk8"))
+    implementation("org.apache.commons:commons-compress:1.3")
 
     val sunJaxbVersion = "2.2.7-b41"
     val apiJaxbVersion = "2.2.7"
@@ -21,6 +21,9 @@ dependencies {
 //    implementation("com.sun.xml.bind:jaxb-core:$sunJaxbVersion")
     implementation("javax.xml.bind:jaxb-api:$apiJaxbVersion")
     implementation("javax.activation:activation:1.1.1")
+
+    implementation("org.postgresql:postgresql:42.2.18")
+    implementation("com.zaxxer:HikariCP:4.0.3")
 
     jaxb("javax.activation:activation:1.1.1")
     jaxb("com.sun.xml.bind:jaxb-xjc:$sunJaxbVersion")
@@ -44,12 +47,10 @@ tasks {
         }
     }
 
-    xjc {
-        jaxb {
-            xjc {
-                generatePackage = "ru.nsu.manasyan.osm.model.generated"
-            }
-            xsdDir = "src/main/resources/"
+    jaxb {
+        xjc {
+            generatePackage = "ru.nsu.manasyan.osm.model.generated"
         }
+        xsdDir = "src/main/resources/"
     }
 }
