@@ -4,21 +4,21 @@ import java.math.BigInteger
 import java.time.LocalDateTime
 
 class Node {
-    var id: BigInteger? = null
+    lateinit var id: BigInteger
 
-    var user: String? = null
+    lateinit var user: String
 
-    var uid: BigInteger? = null
+    lateinit var uid: BigInteger
 
-    var lat: Double? = null
+    var lat: Double = 0.0
 
-    var lon: Double? = null
+    var lon: Double = 0.0
 
-    var version: BigInteger? = null
+    lateinit var version: BigInteger
 
-    var changeset: BigInteger? = null
+    lateinit var changeset: BigInteger
 
-    var timestamp: LocalDateTime? = null
+    lateinit var timestamp: LocalDateTime
 
-    var tags: List<Tag>? = null
+    lateinit var tags: List<Tag>
 }

@@ -1,10 +1,8 @@
 package ru.nsu.manasyan.osm.db.dao
 
-import ru.nsu.manasyan.osm.model.Node
-import ru.nsu.manasyan.osm.model.Tag
+// TODO: add TransactionalOsmDao abstract class
+interface OsmDao<E> {
+    fun save(entity: E)
 
-interface OsmDao {
-    fun saveNode(node: Node)
-
-    fun saveTag(tag: Tag)
+    fun saveAll(entities: Iterable<E>) = entities.forEach { save(it) }
 }

@@ -1,21 +1,32 @@
 package ru.nsu.manasyan.osm
 
-import org.postgresql.Driver
 import ru.nsu.manasyan.osm.db.DbInitializer
-import ru.nsu.manasyan.osm.db.dao.StatementOsmDao
-import ru.nsu.manasyan.osm.model.generated.Node
+import ru.nsu.manasyan.osm.db.dao.node.BatchNodeDao
+import ru.nsu.manasyan.osm.db.dao.tag.BatchTagDao
+import ru.nsu.manasyan.osm.db.datasource.HikariConnectionManager
+import ru.nsu.manasyan.osm.db.transaction.PropagationTransactionManager
+import ru.nsu.manasyan.osm.db.transaction.TransactionWrapper
 import ru.nsu.manasyan.osm.processor.OsmXmlProcessor
-import ru.nsu.manasyan.osm.processor.XmlProcessor
+import ru.nsu.manasyan.osm.service.BatchNodeService
 import java.nio.file.NoSuchFileException
-import java.sql.DriverManager
 import javax.xml.stream.XMLStreamException
 
 fun main(args: Array<String>) {
     try {
-        DbInitializer().initDb()
+        val wrapper = TransactionWrapper(
+            PropagationTransactionManager(
+                HikariConnectionManager
+            )
+        )
+        DbInitializer(wrapper).initDb()
+
         OsmXmlProcessor.process(
             ArgsResolver.getInputFilePath(args),
-            StatementOsmDao()
+            BatchNodeService(
+                wrapper,
+                BatchNodeDao(wrapper),
+                BatchTagDao(wrapper)
+            )
         )
     } catch (exc: WrongArgumentException) {
 //        log.error(exc.localizedMessage)

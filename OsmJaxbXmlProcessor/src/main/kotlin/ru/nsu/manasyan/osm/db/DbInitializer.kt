@@ -1,11 +1,13 @@
 package ru.nsu.manasyan.osm.db
 
-import ru.nsu.manasyan.osm.db.datasource.HikariCpDataSource
+import ru.nsu.manasyan.osm.db.transaction.TransactionWrapper
 import ru.nsu.manasyan.osm.util.DbProperties
 import java.nio.file.Files
 import java.nio.file.Path
 
-class DbInitializer {
+class DbInitializer(
+    private val wrapper: TransactionWrapper
+) {
     fun initDb() {
         try {
             val script = Files.readString(
@@ -16,9 +18,8 @@ class DbInitializer {
                 )
             )
 
-            // TODO: create connection and run script
-            HikariCpDataSource.getConnection().use { connection ->
-                connection.createStatement().use { statement ->
+            wrapper.runInTransaction {
+                createStatement().use { statement ->
                     statement.execute(script)
                 }
             }
