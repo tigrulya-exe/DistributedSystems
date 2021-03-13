@@ -1,0 +1,4 @@
+jdbcUrl: jdbc:postgresql://localhost:5432/Osm
+userName: postgres
+password: password
+initScriptPath: init.sql

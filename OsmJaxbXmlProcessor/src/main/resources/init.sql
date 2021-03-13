@@ -1,4 +1,8 @@
-create table if not exists Nodes (
+drop table if exists Tags;
+
+drop table if exists Nodes;
+
+create table Nodes (
     id bigserial primary key,
     "user" text not null,
     uid numeric not null,
@@ -9,7 +13,7 @@ create table if not exists Nodes (
     "timestamp" timestamp not null
 );
 
-create table if not exists Tags (
+create table Tags (
     id bigserial primary key,
     key text not null,
     value text not null,

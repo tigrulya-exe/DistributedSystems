@@ -1,5 +1,6 @@
 package ru.nsu.manasyan.osm.db.transaction
 
+import ru.nsu.manasyan.osm.util.LoggerProperty
 import java.sql.Connection
 import java.sql.SQLException
 
@@ -12,21 +13,21 @@ interface TransactionManager {
 class TransactionWrapper(
     private val transactionManager: TransactionManager
 ) {
+    private val log by LoggerProperty()
+
     fun runInTransaction(func: Connection.() -> Unit) {
         val transaction = transactionManager.get()
         try {
-            println("START TRANSACTION")
             transaction.connection.func()
             transactionManager.commit(transaction)
         } catch (exc: Exception) {
             try {
+                log.error("Error during transaction: ${exc.localizedMessage}")
                 transactionManager.rollback(transaction)
             } catch (exc: SQLException) {
-                // TODO: add logger
+                log.error("Error during transaction rollback: ${exc.localizedMessage}")
             }
             throw exc
-        }.also {
-            println("END TRANSACTION")
         }
     }
 }

@@ -1,39 +1,23 @@
 package ru.nsu.manasyan.osm
 
-import ru.nsu.manasyan.osm.db.DbInitializer
-import ru.nsu.manasyan.osm.db.dao.node.BatchNodeDao
-import ru.nsu.manasyan.osm.db.dao.tag.BatchTagDao
-import ru.nsu.manasyan.osm.db.datasource.HikariConnectionManager
-import ru.nsu.manasyan.osm.db.transaction.PropagationTransactionManager
-import ru.nsu.manasyan.osm.db.transaction.TransactionWrapper
-import ru.nsu.manasyan.osm.processor.OsmXmlProcessor
-import ru.nsu.manasyan.osm.service.BatchNodeService
-import java.nio.file.NoSuchFileException
-import javax.xml.stream.XMLStreamException
+import ru.nsu.manasyan.osm.db.dao.OsmDaoFactory
+import ru.nsu.manasyan.osm.util.LoggerProperty
 
 fun main(args: Array<String>) {
-    try {
-        val wrapper = TransactionWrapper(
-            PropagationTransactionManager(
-                HikariConnectionManager
-            )
-        )
-        DbInitializer(wrapper).initDb()
+    val logger = object {
+        val log by LoggerProperty()
+    }
 
-        OsmXmlProcessor.process(
+    try {
+        Application().process(
             ArgsResolver.getInputFilePath(args),
-            BatchNodeService(
-                wrapper,
-                BatchNodeDao(wrapper),
-                BatchTagDao(wrapper)
-            )
+            OsmDaoFactory.Strategy.BATCH
         )
     } catch (exc: WrongArgumentException) {
-//        log.error(exc.localizedMessage)
+        logger.log.error(exc.localizedMessage)
         println(ArgsResolver.usage())
-    } catch (exc: XMLStreamException) {
-//        log.error("Error reading from XML")
-    } catch (exc: NoSuchFileException) {
-//        log.error("No file was found with the provided path")
+    } catch (exc: Exception) {
+        logger.log.error("Error during Application initialization: ${exc.localizedMessage}")
+        exc.printStackTrace()
     }
 }

@@ -33,7 +33,7 @@ class PropagationTransactionManager(
     }
 
     private fun close(transaction: Transaction) {
-        transaction.connection.close()
+        connectionManager.closeConnection(transaction.connection)
         openedTransactions.removeCurrentTransaction()
     }
 

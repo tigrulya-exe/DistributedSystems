@@ -2,17 +2,19 @@ package ru.nsu.manasyan.osm.db.datasource
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import ru.nsu.manasyan.osm.util.DbProperties
+import ru.nsu.manasyan.osm.properties.DbProperties
 import java.sql.Connection
 
-object HikariConnectionManager : ConnectionManager {
+class HikariConnectionManager(
+    private val properties: DbProperties
+) : ConnectionManager {
     private val config = HikariConfig()
 
     private val ds: HikariDataSource = HikariDataSource(
         config.apply {
-            jdbcUrl = DbProperties.jdbcUrl
-            username = DbProperties.userName
-            password = DbProperties.password
+            jdbcUrl = properties.jdbcUrl
+            username = properties.userName
+            password = properties.password
             // TODO: get custom props from .properties file
             // enable postgresql server-side statement-caching
             dataSourceProperties["prepareThreshold"] = "1"
@@ -20,4 +22,6 @@ object HikariConnectionManager : ConnectionManager {
     )
 
     override fun getConnection(): Connection = ds.connection
+
+    override fun closeConnection(connection: Connection) = connection.close()
 }

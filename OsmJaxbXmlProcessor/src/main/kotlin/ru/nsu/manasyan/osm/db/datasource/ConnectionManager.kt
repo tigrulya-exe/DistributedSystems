@@ -4,4 +4,5 @@ import java.sql.Connection
 
 interface ConnectionManager {
     fun getConnection(): Connection
+    fun closeConnection(connection: Connection)
 }
