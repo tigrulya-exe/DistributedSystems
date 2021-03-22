@@ -1,13 +1,13 @@
 package ru.nsu.manasyan.osm.db
 
-import ru.nsu.manasyan.osm.db.transaction.TransactionWrapper
+import ru.nsu.manasyan.osm.db.transaction.TransactionManager
 import ru.nsu.manasyan.osm.properties.DbProperties
 import ru.nsu.manasyan.osm.util.LoggerProperty
 import java.nio.file.Files
 import java.nio.file.Path
 
 class DbInitializer(
-    private val wrapper: TransactionWrapper,
+    private val manager: TransactionManager,
     private val properties: DbProperties
 ) {
     private val log by LoggerProperty()
@@ -22,7 +22,7 @@ class DbInitializer(
         )
 
         log.info("Initializing db using script ${properties.initScriptPath}")
-        wrapper.runInTransaction {
+        manager.runInTransaction {
             createStatement().use { statement ->
                 statement.execute(script)
             }

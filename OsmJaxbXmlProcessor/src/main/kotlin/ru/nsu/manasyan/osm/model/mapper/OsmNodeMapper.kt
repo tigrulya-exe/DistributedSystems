@@ -8,16 +8,9 @@ object OsmNodeMapper {
     fun toDbNode(node: GeneratedNode): DbNode =
         DbNode().apply {
             this.id = node.id
-            this.changeset = node.changeset
-            this.lat = node.lat
-            this.lon = node.lon
-            this.uid = node.uid
+            this.latitude = node.lat
+            this.longitude = node.lon
             this.user = node.user
-            this.version = node.version
-            this.timestamp = node.timestamp
-                .toGregorianCalendar()
-                .toZonedDateTime()
-                .toLocalDateTime()
             this.tags = node.tag.map {
                 DbTag(
                     key = it.k,

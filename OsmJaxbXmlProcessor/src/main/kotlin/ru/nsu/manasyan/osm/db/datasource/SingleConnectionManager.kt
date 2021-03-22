@@ -8,12 +8,15 @@ import java.util.*
 class SingleConnectionManager(
     private val properties: DbProperties
 ) : ConnectionManager {
-    private val connection: Connection? = null
+    private var connection: Connection? = null
 
-    override fun getConnection(): Connection = connection ?: createConnection()
+    override fun getConnection(): Connection = connection
+        ?: createConnection().also { connection = it }
 
-    override fun closeConnection(connection: Connection) {
+    override fun closeConnection(connection: Connection) {}
 
+    override fun close() {
+        connection?.close()
     }
 
     private fun createConnection() = DriverManager.getConnection(

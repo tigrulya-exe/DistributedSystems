@@ -1,33 +1,31 @@
 package ru.nsu.manasyan.osm.db.dao.tag
 
-import ru.nsu.manasyan.osm.db.dao.OsmDao
-import ru.nsu.manasyan.osm.db.dao.tag.PreparedStatementTagDao.Companion.PREPARED_STATEMENT
-import ru.nsu.manasyan.osm.db.transaction.TransactionWrapper
+import ru.nsu.manasyan.osm.db.dao.SingleConnectionOsmDao
+import ru.nsu.manasyan.osm.db.transaction.TransactionManager
 import ru.nsu.manasyan.osm.model.Tag
 import java.sql.PreparedStatement
 
 class BatchTagDao(
-    private val transactionWrapper: TransactionWrapper
-) : OsmDao<Tag> {
+    private val transactionWrapper: TransactionManager
+) : SingleConnectionOsmDao<Tag> {
 
-    private val backedDao = PreparedStatementTagDao(transactionWrapper)
+    private val dao = PreparedStatementTagDao(transactionWrapper)
 
-    // just delegate to backedDao
-    override fun save(entity: Tag) = backedDao.save(entity)
+    override fun save(entity: Tag) = dao.save(entity)
 
     override fun saveAll(entities: Iterable<Tag>) {
-        transactionWrapper.runInTransaction {
-            prepareStatement(PREPARED_STATEMENT).use { statement ->
-                addBatches(statement, entities)
-                statement.executeBatch()
-            }
+        dao.preparedStatement.let { statement ->
+            addBatches(statement, entities)
+            statement.executeBatch()
         }
     }
 
     private fun addBatches(statement: PreparedStatement, tags: Iterable<Tag>) {
         tags.forEach { tag ->
-            backedDao.setStatementVariables(statement, tag)
+            dao.setStatementVariables(statement, tag)
             statement.addBatch()
         }
     }
+
+    override fun close() = dao.close()
 }

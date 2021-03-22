@@ -1,14 +1,16 @@
 package ru.nsu.manasyan.osm.service
 
-import ru.nsu.manasyan.osm.db.dao.OsmDaoFactory
-import ru.nsu.manasyan.osm.db.transaction.TransactionWrapper
+import ru.nsu.manasyan.osm.db.dao.SingleConnectionOsmDao
+import ru.nsu.manasyan.osm.db.transaction.TransactionManager
 import ru.nsu.manasyan.osm.model.Node
+import ru.nsu.manasyan.osm.model.Tag
 
 class BatchNodeService(
-    private val transactionWrapper: TransactionWrapper,
-    strategy: OsmDaoFactory.Strategy,
-    private val batchSize: Int = 10000
-) : NodeService(transactionWrapper, strategy) {
+    private val transactionManager: TransactionManager,
+    nodeDao: SingleConnectionOsmDao<Node>,
+    tagDao: SingleConnectionOsmDao<Tag>,
+    private val batchSize: Int = 50000
+) : NodeService(transactionManager, nodeDao, tagDao) {
 
     private val batch = mutableListOf<Node>()
 
@@ -19,8 +21,10 @@ class BatchNodeService(
         }
     }
 
+    override fun close() = flush()
+
     private fun flush() {
-        transactionWrapper.runInTransaction {
+        transactionManager.runInTransaction {
             nodeDao.saveAll(batch)
             tagDao.saveAll(
                 batch.flatMap(Node::tags)

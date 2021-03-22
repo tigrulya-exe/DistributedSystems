@@ -1,23 +1,24 @@
 package ru.nsu.manasyan.osm
 
-import ru.nsu.manasyan.osm.db.dao.OsmDaoFactory
-import ru.nsu.manasyan.osm.util.LoggerProperty
+import org.slf4j.LoggerFactory
+import ru.nsu.manasyan.osm.db.datasource.SingleConnectionManager
+import ru.nsu.manasyan.osm.test.NodeServiceInsertPerformanceTest
 
 fun main(args: Array<String>) {
-    val logger = object {
-        val log by LoggerProperty()
-    }
-
+    val logger = LoggerFactory.getLogger("Main")
     try {
-        Application().process(
-            ArgsResolver.getInputFilePath(args),
-            OsmDaoFactory.Strategy.BATCH
+        val application = Application(
+            connectionManagerProvider = ::SingleConnectionManager
         )
+        NodeServiceInsertPerformanceTest(
+            application,
+            ArgsResolver.getInputFilePath(args)
+        ).run()
     } catch (exc: WrongArgumentException) {
-        logger.log.error(exc.localizedMessage)
+        logger.error(exc.localizedMessage)
         println(ArgsResolver.usage())
     } catch (exc: Exception) {
-        logger.log.error("Error during Application initialization: ${exc.localizedMessage}")
+        logger.error("Error during Application initialization: ${exc.localizedMessage}")
         exc.printStackTrace()
     }
 }

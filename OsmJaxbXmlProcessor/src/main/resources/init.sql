@@ -5,12 +5,8 @@ drop table if exists Nodes;
 create table Nodes (
     id bigserial primary key,
     "user" text not null,
-    uid numeric not null,
-    lat numeric not null,
-    lon numeric not null,
-    version bigint not null,
-    changeset bigint not null,
-    "timestamp" timestamp not null
+    latitude numeric not null,
+    longitude numeric not null
 );
 
 create table Tags (

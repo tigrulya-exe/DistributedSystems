@@ -1,28 +1,26 @@
 package ru.nsu.manasyan.osm.db.dao.node
 
-import ru.nsu.manasyan.osm.db.dao.OsmDao
-import ru.nsu.manasyan.osm.db.transaction.TransactionWrapper
+import ru.nsu.manasyan.osm.db.dao.SingleConnectionOsmDao
+import ru.nsu.manasyan.osm.db.transaction.TransactionManager
 import ru.nsu.manasyan.osm.model.Node
 
 class StatementNodeDao(
-    private val transactionWrapper: TransactionWrapper
-) : OsmDao<Node> {
-    override fun save(entity: Node) {
-        transactionWrapper.runInTransaction {
-            createStatement().use { statement ->
-                statement.execute(
-                    """INSERT INTO NODES VALUES(
-                        ${entity.id},
-                        '${entity.user}',
-                        ${entity.uid},
-                        ${entity.lat},
-                        ${entity.lon},
-                        ${entity.version},
-                        ${entity.changeset},
-                        '${entity.timestamp}'
-                    )""".trimIndent()
-                )
-            }
-        }
+    transactionManager: TransactionManager
+) : SingleConnectionOsmDao<Node> {
+    private val statement = transactionManager.runInTransaction {
+        createStatement()
     }
+
+    override fun save(entity: Node) {
+        statement.execute(
+            """INSERT INTO NODES VALUES(
+                ${entity.id},
+                '${entity.user}',
+                ${entity.latitude},
+                ${entity.longitude}
+            )""".trimIndent()
+        )
+    }
+
+    override fun close() = statement.close()
 }

@@ -15,7 +15,6 @@ class HikariConnectionManager(
             jdbcUrl = properties.jdbcUrl
             username = properties.userName
             password = properties.password
-            // TODO: get custom props from .properties file
             // enable postgresql server-side statement-caching
             dataSourceProperties["prepareThreshold"] = "1"
         }
@@ -24,4 +23,6 @@ class HikariConnectionManager(
     override fun getConnection(): Connection = ds.connection
 
     override fun closeConnection(connection: Connection) = connection.close()
+
+    override fun close() = ds.close()
 }

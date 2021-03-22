@@ -1,25 +1,26 @@
 package ru.nsu.manasyan.osm.db.dao.tag
 
-import ru.nsu.manasyan.osm.db.dao.OsmDao
-import ru.nsu.manasyan.osm.db.transaction.TransactionWrapper
+import ru.nsu.manasyan.osm.db.dao.SingleConnectionOsmDao
+import ru.nsu.manasyan.osm.db.transaction.TransactionManager
 import ru.nsu.manasyan.osm.model.Tag
 
 class StatementTagDao(
-    private val transactionWrapper: TransactionWrapper
-) : OsmDao<Tag> {
+    transactionManager: TransactionManager
+) : SingleConnectionOsmDao<Tag> {
 
-    override fun save(entity: Tag) {
-        transactionWrapper.runInTransaction {
-            createStatement().use { statement ->
-                statement.execute(
-                    """INSERT INTO TAGS(key, value, nodeId) VALUES(
-                        '${entity.key}',
-                        '${entity.value}',
-                        ${entity.nodeId}
-                    )""".trimIndent()
-                )
-            }
-        }
+    private val statement = transactionManager.runInTransaction {
+        createStatement()
     }
 
+    override fun save(entity: Tag) {
+        statement.execute(
+            """INSERT INTO TAGS(key, value, nodeId) VALUES(
+                    '${entity.key}',
+                    '${entity.value}',
+                    ${entity.nodeId}
+            )""".trimIndent()
+        )
+    }
+
+    override fun close() = statement.close()
 }

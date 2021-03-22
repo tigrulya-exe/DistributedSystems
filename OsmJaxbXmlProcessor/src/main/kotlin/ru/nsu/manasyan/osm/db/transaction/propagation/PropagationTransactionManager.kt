@@ -1,6 +1,8 @@
-package ru.nsu.manasyan.osm.db.transaction
+package ru.nsu.manasyan.osm.db.transaction.propagation
 
 import ru.nsu.manasyan.osm.db.datasource.ConnectionManager
+import ru.nsu.manasyan.osm.db.transaction.Transaction
+import ru.nsu.manasyan.osm.db.transaction.TransactionManager
 
 class PropagationTransactionManager(
     private val connectionManager: ConnectionManager
@@ -9,7 +11,6 @@ class PropagationTransactionManager(
     private val openedTransactions = TreadLocalTransactionsContainer()
 
     override fun commit(transaction: Transaction) {
-        openedTransactions.decrementTransactionsCount()
         if (!openedTransactions.isLastOpenedTransaction()) {
             return
         }
@@ -18,7 +19,6 @@ class PropagationTransactionManager(
     }
 
     override fun rollback(transaction: Transaction) {
-        openedTransactions.decrementTransactionsCount()
         if (!openedTransactions.isLastOpenedTransaction()) {
             return
         }
@@ -26,7 +26,7 @@ class PropagationTransactionManager(
         close(transaction)
     }
 
-    override fun get(): Transaction {
+    override fun getTransaction(): Transaction {
         val transaction = openedTransactions.getCurrentTransaction() ?: create()
         openedTransactions.incrementTransactionsCount()
         return transaction
