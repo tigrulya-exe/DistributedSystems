@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
         logger.error(exc.localizedMessage)
         println(ArgsResolver.usage())
     } catch (exc: Exception) {
-        logger.error("Error during Application initialization: ${exc.localizedMessage}")
+        logger.error("Error during Application testing: ${exc.localizedMessage}")
         exc.printStackTrace()
     }
 }

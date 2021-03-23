@@ -21,7 +21,12 @@ class BatchNodeService(
         }
     }
 
-    override fun close() = flush()
+    override fun close() {
+        if (batch.isNotEmpty()) {
+            flush()
+        }
+        super.close()
+    }
 
     private fun flush() {
         transactionManager.runInTransaction {

@@ -33,6 +33,7 @@ class NodeServiceInsertPerformanceTest(
         runInsertBatch()
         runInsertPreparedStatement()
         runInsertStatement()
+        application.clear()
     }
 
     private fun runInsertBatch() = runMeasuring("INSERT BATCH") {

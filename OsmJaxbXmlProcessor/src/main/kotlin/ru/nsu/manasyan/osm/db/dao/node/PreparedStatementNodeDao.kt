@@ -27,5 +27,7 @@ class PreparedStatementNodeDao(
         setDouble(4, node.longitude)
     }
 
-    override fun close() = preparedStatement.close()
+    override fun close() {
+        preparedStatement.close()
+    }
 }

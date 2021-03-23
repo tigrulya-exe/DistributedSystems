@@ -18,8 +18,10 @@ class Application(
 ) {
     private val log by LoggerProperty()
 
+    private val connectionManager = connectionManagerProvider(properties)
+
     val transactionManager = SingleConnectionTransactionManager(
-        connectionManagerProvider(properties)
+        connectionManager
     )
 
     init {
@@ -37,16 +39,17 @@ class Application(
     ) {
         log.info("Start processing file $inputFilePath using strategy $strategy")
         try {
-            OsmXmlProcessor.process(
-                inputFilePath,
-                NodeServiceFactory.createService(
-                    strategy,
-                    transactionManager
-                )
-            )
+            NodeServiceFactory.createService(
+                strategy,
+                transactionManager
+            ).use {
+                OsmXmlProcessor.process(inputFilePath, it)
+            }
             log.info("End processing file $inputFilePath using strategy $strategy")
         } catch (exc: Exception) {
             log.error("Error during xml processing: ${exc.localizedMessage}")
         }
     }
+
+    fun clear() = connectionManager.close()
 }

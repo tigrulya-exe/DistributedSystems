@@ -18,5 +18,8 @@ open class NodeService(
         }
     }
 
-    override fun close() {}
+    override fun close() {
+        nodeDao.close()
+        tagDao.close()
+    }
 }
