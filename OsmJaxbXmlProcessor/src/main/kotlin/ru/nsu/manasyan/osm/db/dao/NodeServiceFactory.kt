@@ -7,8 +7,8 @@ import ru.nsu.manasyan.osm.db.dao.tag.BatchTagDao
 import ru.nsu.manasyan.osm.db.dao.tag.PreparedStatementTagDao
 import ru.nsu.manasyan.osm.db.dao.tag.StatementTagDao
 import ru.nsu.manasyan.osm.db.transaction.TransactionManager
-import ru.nsu.manasyan.osm.model.Node
-import ru.nsu.manasyan.osm.model.Tag
+import ru.nsu.manasyan.osm.model.NodeEntity
+import ru.nsu.manasyan.osm.model.TagEntity
 import ru.nsu.manasyan.osm.service.BatchNodeService
 import ru.nsu.manasyan.osm.service.NodeService
 
@@ -49,12 +49,12 @@ object NodeServiceFactory {
 }
 
 private class OsmDaoCreators(
-    val nodeDaoCreator: (TransactionManager) -> SingleConnectionOsmDao<Node>,
-    val tagDaoCreator: (TransactionManager) -> SingleConnectionOsmDao<Tag>,
+    val nodeDaoCreator: (TransactionManager) -> OsmDao<NodeEntity>,
+    val tagDaoCreator: (TransactionManager) -> OsmDao<TagEntity>,
     val serviceCreator: (
         TransactionManager,
-        SingleConnectionOsmDao<Node>,
-        SingleConnectionOsmDao<Tag>
+        OsmDao<NodeEntity>,
+        OsmDao<TagEntity>
     ) -> NodeService
 )
 

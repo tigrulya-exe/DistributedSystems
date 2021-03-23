@@ -1,7 +1,7 @@
 package ru.nsu.manasyan.osm.service
 
-import ru.nsu.manasyan.osm.model.Node
+import ru.nsu.manasyan.osm.model.NodeEntity
 
 interface SingleConnectionNodeService : AutoCloseable {
-    fun save(entity: Node)
+    fun save(entity: NodeEntity)
 }

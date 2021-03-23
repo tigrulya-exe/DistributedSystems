@@ -5,35 +5,29 @@ import ru.nsu.manasyan.osm.db.dao.NodeServiceFactory
 import ru.nsu.manasyan.osm.db.datasource.ConnectionManager
 import ru.nsu.manasyan.osm.db.datasource.HikariConnectionManager
 import ru.nsu.manasyan.osm.db.transaction.SingleConnectionTransactionManager
-import ru.nsu.manasyan.osm.db.transaction.propagation.PropagationTransactionManager
 import ru.nsu.manasyan.osm.processor.OsmXmlProcessor
 import ru.nsu.manasyan.osm.properties.DbProperties
-import ru.nsu.manasyan.osm.properties.DbPropertiesParser
 import ru.nsu.manasyan.osm.util.LoggerProperty
 
 typealias ConnectionManagerProvider = (DbProperties) -> ConnectionManager
 
 class Application(
-    propertiesPath: String = "application.yaml",
+    properties: DbProperties,
     connectionManagerProvider: ConnectionManagerProvider = ::HikariConnectionManager,
     initDb: Boolean = false
 ) {
     private val log by LoggerProperty()
 
-    private val properties = DbPropertiesParser.parse(propertiesPath)
-
-    private val transactionManager = SingleConnectionTransactionManager(
+    val transactionManager = SingleConnectionTransactionManager(
         connectionManagerProvider(properties)
-    )
-
-    val dbInitializer = DbInitializer(
-        transactionManager,
-        properties
     )
 
     init {
         if (initDb) {
-            dbInitializer.initDb()
+            DbInitializer(
+                transactionManager,
+                properties
+            ).initDb()
         }
     }
 

@@ -5,19 +5,16 @@ import java.io.BufferedInputStream
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.function.Consumer
 import javax.xml.bind.JAXBContext
 import javax.xml.stream.XMLEventReader
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.events.StartElement
 
-typealias XmlNodeHandler<T> = Consumer<T>
-
 class XmlProcessor {
     inline fun <reified T> process(
         fileName: String,
         nodeName: String,
-        handler: XmlNodeHandler<T>
+        handler: (T) -> Unit
     ) {
         return BZip2CompressorInputStream(
             BufferedInputStream(
@@ -33,7 +30,7 @@ class XmlProcessor {
     inline fun <reified T> processDecompressedStream(
         stream: InputStream,
         nodeName: String,
-        handler: XmlNodeHandler<T>
+        handler: (T) -> Unit
     ) {
         val unmarshaller = JAXBContext
             .newInstance(T::class.java)
@@ -49,7 +46,7 @@ class XmlProcessor {
                 val event = reader.peek()
                 if (event is StartElement && event.name.localPart == nodeName) {
                     val node = unmarshaller.unmarshal(reader, T::class.java).value
-                    handler.accept(node)
+                    handler(node)
                     continue
                 }
                 reader.next()

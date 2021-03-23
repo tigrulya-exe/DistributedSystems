@@ -1,15 +1,33 @@
 package ru.nsu.manasyan.osm.test
 
 import ru.nsu.manasyan.osm.Application
+import ru.nsu.manasyan.osm.db.DbInitializer
 import ru.nsu.manasyan.osm.db.dao.NodeServiceFactory
+import ru.nsu.manasyan.osm.db.datasource.SingleConnectionManager
+import ru.nsu.manasyan.osm.properties.DbPropertiesParser
 import ru.nsu.manasyan.osm.util.LoggerProperty
 import kotlin.system.measureTimeMillis
 
 class NodeServiceInsertPerformanceTest(
-    private val application: Application,
     private val inputFilePath: String
 ) {
     private val logger by LoggerProperty()
+
+    private val application: Application
+
+    private val dbInitializer: DbInitializer
+
+    init {
+        val properties = DbPropertiesParser.parse()
+        application = Application(
+            properties,
+            connectionManagerProvider = ::SingleConnectionManager
+        )
+        dbInitializer = DbInitializer(
+            application.transactionManager,
+            properties
+        )
+    }
 
     fun run() {
         runInsertBatch()
@@ -44,12 +62,12 @@ class NodeServiceInsertPerformanceTest(
     ) {
         logger.info("Start action $actionName")
         logger.info("Step 1: init database")
-        application.dbInitializer.initDb()
+        dbInitializer.initDb()
         logger.info("Step 2: run action")
         measureTimeMillis {
             action()
         }.let {
-            logger.info("Elapsed time: ${"%.3fs".format(it / 1000.0)}")
+            logger.info("Elapsed time: %.3f sec".format(it / 1000F))
         }
     }
 }

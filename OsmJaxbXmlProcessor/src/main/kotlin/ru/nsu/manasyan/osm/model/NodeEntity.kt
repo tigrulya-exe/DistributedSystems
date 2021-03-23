@@ -2,7 +2,7 @@ package ru.nsu.manasyan.osm.model
 
 import java.math.BigInteger
 
-class Node {
+class NodeEntity {
     lateinit var id: BigInteger
 
     lateinit var user: String
@@ -11,5 +11,5 @@ class Node {
 
     var longitude: Double = 0.0
 
-    lateinit var tags: List<Tag>
+    lateinit var tags: List<TagEntity>
 }

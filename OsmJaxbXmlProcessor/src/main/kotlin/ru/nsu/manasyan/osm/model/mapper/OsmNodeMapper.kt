@@ -1,7 +1,7 @@
 package ru.nsu.manasyan.osm.model.mapper
 
-import ru.nsu.manasyan.osm.model.Node as DbNode
-import ru.nsu.manasyan.osm.model.Tag as DbTag
+import ru.nsu.manasyan.osm.model.NodeEntity as DbNode
+import ru.nsu.manasyan.osm.model.TagEntity as DbTag
 import ru.nsu.manasyan.osm.model.generated.Node as GeneratedNode
 
 object OsmNodeMapper {

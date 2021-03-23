@@ -2,7 +2,7 @@ package ru.nsu.manasyan.osm.model
 
 import java.math.BigInteger
 
-class Tag(
+class TagEntity(
     var key: String? = null,
     var value: String? = null,
     var nodeId: BigInteger? = null
