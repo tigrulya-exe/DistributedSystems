@@ -11,7 +11,7 @@ import ru.nsu.manasyan.osm.util.getPageableOrDefault
 
 @Service
 abstract class AbstractCrudService<E : Identifiable>(
-    private val repository: JpaRepository<E, Long>
+    protected open val repository: JpaRepository<E, Long>
 ) {
     private val logger by LoggerProperty()
 

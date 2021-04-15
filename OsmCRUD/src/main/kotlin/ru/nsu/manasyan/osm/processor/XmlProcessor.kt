@@ -1,6 +1,7 @@
 package ru.nsu.manasyan.osm.processor
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
+import org.springframework.stereotype.Component
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.nio.file.Files
@@ -10,8 +11,9 @@ import javax.xml.stream.XMLEventReader
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.events.StartElement
 
+@Component
 class XmlProcessor {
-    inline fun <reified T> process(
+    final inline fun <reified T> process(
         fileName: String,
         nodeName: String,
         handler: (T) -> Unit
@@ -27,7 +29,7 @@ class XmlProcessor {
         }
     }
 
-    inline fun <reified T> processDecompressedStream(
+    final inline fun <reified T> processDecompressedStream(
         stream: InputStream,
         nodeName: String,
         handler: (T) -> Unit

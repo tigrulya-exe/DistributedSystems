@@ -34,6 +34,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
     implementation("org.postgresql:postgresql:42.2.14")
 
     jaxb("javax.activation:activation:1.1.1")

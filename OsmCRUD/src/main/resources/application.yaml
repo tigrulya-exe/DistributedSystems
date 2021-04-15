@@ -12,3 +12,16 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
+        use_sql_comments: true
+logging:
+  level:
+    org:
+      hibernate:
+        type: trace
+
+osm:
+  db:
+    init:
+      enabled: false
+      file-path: C:\Users\Tigrulya\Desktop\Study\IdeaProjects\DistributedSystems\OsmXmlProcessor\RU-NVS.osm.bz2

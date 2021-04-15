@@ -31,8 +31,8 @@ class NodeServiceInsertPerformanceTest(
 
     fun run() {
         runInsertBatch()
-        runInsertPreparedStatement()
-        runInsertStatement()
+//        runInsertPreparedStatement()
+//        runInsertStatement()
         application.clear()
     }
 

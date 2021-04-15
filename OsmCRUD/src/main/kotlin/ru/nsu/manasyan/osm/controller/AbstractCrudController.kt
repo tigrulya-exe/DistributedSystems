@@ -9,31 +9,31 @@ import ru.nsu.manasyan.osm.util.PaginationRequestParams
 
 
 abstract class AbstractCrudController<E : Identifiable, D>(
-    protected val service: AbstractCrudService<E>,
-    protected val mapper: Mapper<E, D>
+    protected open val service: AbstractCrudService<E>,
+    protected open val mapper: Mapper<E, D>
 ) {
     @PostMapping
     open fun create(@RequestBody dto: D) {
-        service.add(mapper.toEntity(dto))
+        service.add(mapper.mapReversed(dto))
     }
 
     @GetMapping("/{id}")
     open fun get(@PathVariable id: Long): ResponseEntity<*> {
         return ResponseEntity.ok(
-            mapper.toDto(service.get(id))
+            mapper.map(service.get(id))
         )
     }
 
     @GetMapping
     open fun getAll(params: PaginationRequestParams?): ResponseEntity<*> {
         return ResponseEntity.ok(
-            mapper.toDtos(service.getAll(params))
+            mapper.mapIterable(service.getAll(params))
         )
     }
 
     @PutMapping
     open fun update(@RequestBody dto: D) {
-        service.update(mapper.toEntity(dto))
+        service.update(mapper.mapReversed(dto))
     }
 
     @DeleteMapping("/{id}")

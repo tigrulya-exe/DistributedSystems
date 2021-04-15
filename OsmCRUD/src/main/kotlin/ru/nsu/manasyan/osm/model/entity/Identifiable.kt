@@ -5,11 +5,7 @@ import javax.persistence.*
 
 @MappedSuperclass
 abstract class Identifiable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    var id: Long? = null
+    abstract var id: Long?
 
     override fun equals(other: Any?): Boolean {
         other ?: return false
